@@ -2,9 +2,9 @@ export default function DashboardLayout({ children }) {
   return (
     <section>
       <nav></nav>
-      <h1>HEADER</h1>
+      <h1></h1>
       {children}
-      <h1>FOOTER</h1>
+      <h1></h1>
     </section>
   );
 }
