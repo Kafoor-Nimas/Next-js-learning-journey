@@ -8,4 +8,5 @@ const postSchema = new Schema({
 
 const PostModel = models.Post || model("Post", postSchema);
 
-export default PostModel;
+export default PostModel; 
+ 
