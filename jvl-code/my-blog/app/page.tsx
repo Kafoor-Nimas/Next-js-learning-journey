@@ -1,10 +1,12 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
+  const inputRef = useRef("");
+  const [search, setSearch] = useState(false);
 
   useEffect(() => {
     console.log(process.env.NEXT_PUBLIC_API_URL, "API_URL");
@@ -12,6 +14,16 @@ export default function Home() {
       .then((res) => res.json())
       .then((res) => setPosts(res));
   }, []);
+
+  const searchPost = () => {
+    setSearch(true);
+    fetch(
+      process.env.NEXT_PUBLIC_API_URL + "/posts?q=" + inputRef.current.value
+    )
+      .then((res) => res.json())
+      .then((res) => setPosts(res))
+      .finally(() => setSearch(false));
+  };
   return (
     <>
       <main className="container mx-auto px-4 py-6">
@@ -23,12 +35,17 @@ export default function Home() {
       </main>
       <div className="flex justify-end px-4">
         <input
+          ref={inputRef}
           type="text"
           className="px-4 py-2 border border-gray-300 rounded-md"
           placeholder="Search..."
         />
-        <button className="px-4 py-2 bg-blue-500 text-white rounded-md ml-4">
-          Search
+        <button
+          disabled={search}
+          onClick={searchPost}
+          className="px-4 py-2 bg-blue-500 text-white rounded-md ml-4"
+        >
+          {search ? "Searching..." : "Search"}
         </button>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
