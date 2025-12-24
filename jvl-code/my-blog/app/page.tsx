@@ -62,6 +62,9 @@ export default function Home() {
             </div>
           </Link>
         ))}
+       {!posts.length > 0 &&  inputRef.current.value && (<p>
+          No posts available for this query: <b>{inputRef.current.value}</b>
+        </p>)}
       </div>
     </>
   );
