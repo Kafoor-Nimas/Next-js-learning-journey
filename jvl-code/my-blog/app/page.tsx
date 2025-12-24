@@ -15,7 +15,10 @@ export default function Home() {
       .then((res) => setPosts(res));
   }, []);
 
-  const searchPost = () => {
+  const searchPost = (e) => {
+    if (e.type === "keydown" && e.key !== "Enter") {
+      return;
+    }
     setSearch(true);
     fetch(
       process.env.NEXT_PUBLIC_API_URL + "/posts?q=" + inputRef.current.value
@@ -35,6 +38,8 @@ export default function Home() {
       </main>
       <div className="flex justify-end px-4">
         <input
+          disabled={search}
+          onKeyDown={searchPost}
           ref={inputRef}
           type="text"
           className="px-4 py-2 border border-gray-300 rounded-md"
@@ -62,9 +67,11 @@ export default function Home() {
             </div>
           </Link>
         ))}
-       {!posts.length > 0 &&  inputRef.current.value && (<p>
-          No posts available for this query: <b>{inputRef.current.value}</b>
-        </p>)}
+        {!posts.length > 0 && inputRef.current.value && (
+          <p>
+            No posts available for this query: <b>{inputRef.current.value}</b>
+          </p>
+        )}
       </div>
     </>
   );
