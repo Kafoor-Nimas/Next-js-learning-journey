@@ -17,8 +17,13 @@ const Contact = () => {
       body: JSON.stringify(inputs),
     })
       .then((res) => res.json())
-      .then((res) => setMessage(res.message));
-    setInputs({});
+      .then((res) => {
+        setMessage(res.message);
+        setInputs({});
+        setTimeout(() => {
+          setMessage("");
+        }, 3000);
+      });
   };
   return (
     <div>
@@ -64,7 +69,10 @@ const Contact = () => {
               rows="4"
             ></textarea>
           </div>
-          <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+          <button
+            type="submit"
+            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+          >
             Submit
           </button>
         </form>
