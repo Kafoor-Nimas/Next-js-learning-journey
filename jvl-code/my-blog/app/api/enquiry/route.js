@@ -9,6 +9,6 @@ export async function POST(req) {
     await EnquiryModel.create(enquiry);
     return Response.json({ message: "Enquiry has been sent!" });
   } catch (error) {
-    return Response.json({ message: error.message });
+    return Response.json({ message: error._message });
   }
 }
