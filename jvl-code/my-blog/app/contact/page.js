@@ -1,4 +1,8 @@
 "use client";
+export const metadata = {
+  title: "Contact Us Page",
+  description:" Learn more contact us on this page.",
+}; 
 
 import React, { useState } from "react";
 
