@@ -4,14 +4,22 @@ import React, { useState } from "react";
 
 const Contact = () => {
   const [inputs, setInputs] = useState({});
+  const [message, setMessage] = useState("");
 
   const handleInput = (e) => {
-    setInputs((prev) => ({...prev, [e.target.name]: e.target.value }));
+    setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = async (e) => {
-
-  }
+    e.preventDefault();
+    fetch(process.env.NEXT_PUBLIC_API_URL + "/enquiry", {
+      method: "POST",
+      body: JSON.stringify(inputs),
+    })
+      .then((res) => res.json())
+      .then((res) => setMessage(res.message));
+    setInputs({});
+  };
   return (
     <div>
       <main className="container mx-auto px-4 py-6">
@@ -35,13 +43,11 @@ const Contact = () => {
               Email:
             </label>
             <input
-
               onChange={handleInput}
               value={inputs.email ?? ""}
               type="email"
               id="email"
               name="email"
-
               className="border rounded px-2 py-1 w-3/4"
             />
           </div>
@@ -51,10 +57,9 @@ const Contact = () => {
             </label>
             <textarea
               onChange={handleInput}
-               value={inputs.message ?? ""}
+              value={inputs.message ?? ""}
               id="message"
               name="message"
-
               className="border rounded px-2 py-1 w-3/4"
               rows="4"
             ></textarea>
@@ -63,6 +68,7 @@ const Contact = () => {
             Submit
           </button>
         </form>
+        {message && <p>{message}</p>}
       </main>
     </div>
   );
