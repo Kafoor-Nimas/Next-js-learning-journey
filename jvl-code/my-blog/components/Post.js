@@ -2,7 +2,7 @@
 
 import { use, useEffect, useState } from "react";
 
-export default function Page({ params }) {
+export default function Post({ params }) {
   const resolvedParams = use(params);
   const id = resolvedParams.id;
   const [post, setPost] = useState(null);
