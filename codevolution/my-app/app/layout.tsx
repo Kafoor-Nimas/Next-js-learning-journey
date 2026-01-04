@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,6 +35,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
+  const [input, setInput] = useState("");
   return (
     <html lang="en">
       <body
@@ -42,6 +44,14 @@ export default function RootLayout({
         <header style={{ backgroundColor: "lightblue", padding: "1rem" }}>
           <p>Header</p>
         </header>
+        <div>
+          <input
+            className="border border-black"
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+          />
+        </div>
         {navLinks.map((link) => {
           const isActive =
             pathname === link.href ||
