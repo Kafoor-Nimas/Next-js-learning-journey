@@ -1,6 +1,7 @@
+import { Card } from "@/components/card";
 
 export default function UserAnalytics() {
   return (
-    <div>UserAnalytics</div>
+    <Card>UserAnalytics</Card>
   )
 }
