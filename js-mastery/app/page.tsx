@@ -4,7 +4,7 @@ const Home = () => {
   console.log("I am a server Component");
   return (
     <main>
-      <div>Welcome to Next js</div>
+      <h1 className="text-4xl font-medium">Welcome to Next js</h1>
       <Hello />
     </main>
   );
