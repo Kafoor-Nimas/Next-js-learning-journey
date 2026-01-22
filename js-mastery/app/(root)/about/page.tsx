@@ -1,8 +1,6 @@
-
 const page = () => {
-  return (
-    <div>About page</div>
-  )
-}
+  throw new Error("Function not implemented.");
+  return <div>About page</div>;
+};
 
-export default page
+export default page;
