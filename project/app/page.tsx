@@ -1,8 +1,11 @@
-
 const page = () => {
   return (
-    <h1>Welcome to next js 16!</h1>
-  )
-}
+    <section>
+      <h1 className="text-center">
+        The Hub for Every Dev <br /> Event You Can't Miss
+      </h1>
+    </section>
+  );
+};
 
-export default page
+export default page;
