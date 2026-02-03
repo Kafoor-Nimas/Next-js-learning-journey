@@ -10,6 +10,16 @@ const page = () => {
         Hackathons, Meetups, and Conferences, All in One Place
       </p>
       <ExploreBtn />
+
+      <div>
+        <h3>Featured Events</h3>
+
+        <ul className="events">
+          {[1, 2, 3, 4, 5].map((event) => (
+            <li key={event}>Event {event}</li>
+          ))}
+        </ul>
+      </div>
     </section>
   );
 };
