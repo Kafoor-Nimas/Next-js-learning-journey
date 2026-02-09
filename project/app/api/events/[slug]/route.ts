@@ -1,42 +1,42 @@
-import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
-import { Event } from '@/database';
+import { NextRequest, NextResponse } from "next/server";
+import connectDB from "@/lib/mongodb";
+import { Event } from "@/database";
 
 /**
- * Type for route params
+ * Type for route params (Next.js 15+ - params is a Promise)
  */
 interface RouteParams {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 /**
  * GET /api/events/[slug]
  * Fetch a single event by its slug
- * 
+ *
  * @param request - Next.js request object
- * @param params - Route parameters containing the slug
+ * @param context - Route context containing params promise
  * @returns JSON response with event data or error
  */
 export async function GET(
   request: NextRequest,
-  { params }: RouteParams
+  context: RouteParams,
 ): Promise<NextResponse> {
   try {
     // Connect to database
     await connectDB();
 
-    // Validate slug parameter
-    const { slug } = params;
+    // Await params (required in Next.js 15+)
+    const { slug } = await context.params;
 
     if (!slug) {
       return NextResponse.json(
         {
           success: false,
-          message: 'Slug parameter is required',
+          message: "Slug parameter is required",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -46,9 +46,10 @@ export async function GET(
       return NextResponse.json(
         {
           success: false,
-          message: 'Invalid slug format. Slug must contain only lowercase letters, numbers, and hyphens',
+          message:
+            "Invalid slug format. Slug must contain only lowercase letters, numbers, and hyphens",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -62,7 +63,7 @@ export async function GET(
           success: false,
           message: `Event with slug "${slug}" not found`,
         },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -72,20 +73,20 @@ export async function GET(
         success: true,
         data: event,
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     // Log error for debugging (in production, use a proper logging service)
-    console.error('Error fetching event by slug:', error);
+    console.error("Error fetching event by slug:", error);
 
     // Handle unexpected errors
     return NextResponse.json(
       {
         success: false,
-        message: 'An unexpected error occurred while fetching the event',
-        error: error instanceof Error ? error.message : 'Unknown error',
+        message: "An unexpected error occurred while fetching the event",
+        error: error instanceof Error ? error.message : "Unknown error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
