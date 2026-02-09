@@ -107,87 +107,72 @@ const EventSchema = new Schema<IEvent>(
     },
   },
   {
-    timestamps: true, // Auto-generate createdAt and updatedAt
+    timestamps: true,
   }
 );
 
 /**
- * Pre-save hook: Generate slug from title, normalize date and time
- * Only regenerates slug if title is modified
+ * Pre-save hook: Generate slug, normalize date and time
+ * Synchronous hook - no async/await needed
  */
-EventSchema.pre('save', function (next) {
-  const event = this as IEvent;
-
-  // Generate slug only if title is modified or new document
-  if (event.isModified('title')) {
-    event.slug = event.title
+EventSchema.pre('save', function () {
+  // Generate slug from title if title is modified
+  if (this.isModified('title')) {
+    this.slug = this.title
       .toLowerCase()
       .trim()
-      .replace(/[^\w\s-]/g, '') // Remove special characters
-      .replace(/\s+/g, '-') // Replace spaces with hyphens
-      .replace(/-+/g, '-') // Remove consecutive hyphens
-      .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
+      .replace(/[^\w\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-+|-+$/g, '');
   }
 
-  // Normalize and validate date to ISO format (YYYY-MM-DD)
-  if (event.isModified('date')) {
+  // Normalize date to ISO format (YYYY-MM-DD)
+  if (this.isModified('date')) {
     const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
     
-    // If date is not in ISO format, try to parse and convert
-    if (!dateRegex.test(event.date)) {
-      const parsedDate = new Date(event.date);
+    if (!dateRegex.test(this.date)) {
+      const parsedDate = new Date(this.date);
       
       if (isNaN(parsedDate.getTime())) {
-        return next(new Error('Invalid date format. Use YYYY-MM-DD'));
+        throw new Error('Invalid date format. Use YYYY-MM-DD');
       }
       
-      // Convert to ISO date string (YYYY-MM-DD)
-      event.date = parsedDate.toISOString().split('T')[0];
+      this.date = parsedDate.toISOString().split('T')[0];
     }
   }
 
   // Normalize time to 24-hour format (HH:MM)
-  if (event.isModified('time')) {
+  if (this.isModified('time')) {
     const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
     
-    if (!timeRegex.test(event.time)) {
-      // Try to parse common time formats (e.g., "2:30 PM", "14:30")
+    if (!timeRegex.test(this.time)) {
       const time12HourRegex = /^(\d{1,2}):(\d{2})\s*(AM|PM)$/i;
-      const match = event.time.match(time12HourRegex);
+      const match = this.time.match(time12HourRegex);
       
       if (match) {
         let hours = parseInt(match[1]);
         const minutes = match[2];
         const period = match[3].toUpperCase();
         
-        // Convert to 24-hour format
         if (period === 'PM' && hours !== 12) hours += 12;
         if (period === 'AM' && hours === 12) hours = 0;
         
-        event.time = `${hours.toString().padStart(2, '0')}:${minutes}`;
+        this.time = `${hours.toString().padStart(2, '0')}:${minutes}`;
       } else {
-        return next(new Error('Invalid time format. Use HH:MM (24-hour format)'));
+        throw new Error('Invalid time format. Use HH:MM (24-hour format)');
       }
     }
   }
-
-  next();
 });
 
-/**
- * Add unique index on slug for faster queries and uniqueness enforcement
- */
+// Indexes for performance
 EventSchema.index({ slug: 1 });
-
-/**
- * Add indexes for common query patterns
- */
 EventSchema.index({ date: 1 });
 EventSchema.index({ tags: 1 });
 
 /**
  * Export Event model
- * Prevents model recompilation during hot reloads in development
  */
 const Event: Model<IEvent> =
   mongoose.models.Event || mongoose.model<IEvent>('Event', EventSchema);
