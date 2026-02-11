@@ -9,12 +9,39 @@ const EventDetailsPage = async ({
 }) => {
   const { slug } = await params;
   const request = await fetch(`${BASE_URL}/api/events/${slug}`);
-  const { event } = await request.json();
 
-  if (!event) return notFound();
+  if (!request.ok) {
+    return notFound();
+  }
+
+  const response = await request.json();
+
+  // Check if the request was successful and data exists
+  if (!response.success || !response.data) {
+    return notFound();
+  }
+
+  // Destructure from response.data (not response.event)
+  const {
+    description,
+    image,
+    overview,
+    date,
+    time,
+    location,
+    mode,
+    agenda,
+    audience,
+    tags,
+  } = response.data;
+
   return (
     <section id="event">
-      <h1>Event Details: {slug}</h1>
+      <div className="header">
+        <h1>Event Description</h1>
+        <p>{description}</p>
+      </div>
+      {/* Add more fields as needed */}
     </section>
   );
 };
