@@ -1,8 +1,34 @@
+"use client";
+
+import { useState } from "react";
 
 const BookEvent = () => {
+  const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
   return (
-    <div>BookEvent</div>
-  )
-}
+    <div id="book-event">
+      {submitted ? (
+        <p className="text-shadow-amber-100">Thank you for signing up!</p>
+      ) : (
+        <form>
+          <div>
+            <label htmlFor="email">Email Address</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              id="email"
+              placeholder="Enter your email address"
+            />
+          </div>
 
-export default BookEvent
+          <button type="submit" className="button-submit">
+            Submit
+          </button>
+        </form>
+      )}
+    </div>
+  );
+};
+
+export default BookEvent;
