@@ -29,6 +29,16 @@ const EventAgenda = ({ agendaItems }: { agendaItems: string[] }) => (
   </div>
 );
 
+const EventTags = ({ tags }: { tags: string[] }) => (
+  <div className="flex flex-row gap-1.5 flex-wrap">
+    {tags.map((tag) => (
+      <div className="pill" key={tag}>
+        {tag}
+      </div>
+    ))}
+  </div>
+);
+
 const EventDetailsPage = async ({
   params,
 }: {
