@@ -18,6 +18,17 @@ const EventDetailItem = ({
   </div>
 );
 
+const EventAgenda = ({ agendaItems }: { agendaItems: string[] }) => (
+  <div className="agenda">
+    <h2>Agenda</h2>
+    <ul>
+      {agendaItems.map((item) => (
+        <li key={item}>{item}</li>
+      ))}
+    </ul>
+  </div>
+);
+
 const EventDetailsPage = async ({
   params,
 }: {
@@ -49,6 +60,7 @@ const EventDetailsPage = async ({
     agenda,
     audience,
     tags,
+    organizer,
   } = response.data;
 
   return (
@@ -88,6 +100,13 @@ const EventDetailsPage = async ({
               alt="audience"
               label={audience}
             />
+          </section>
+
+          <EventAgenda agendaItems={JSON.parse(agenda[0])} />
+
+          <section className="flex-col-gap-2">
+            <h2>About the Organizer</h2>
+            <p>{organizer}</p>
           </section>
         </div>
         {/* Right Side - Booking Form */}
